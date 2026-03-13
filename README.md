@@ -62,18 +62,18 @@ Add a path repository to the host application's `composer.json`:
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "path",
-            "url": "packages/rastographer/igdownloader",
-            "options": {
-                "symlink": true
-            }
-        }
-    ],
-    "require": {
-        "rastographer/igdownloader": "^0.1"
+  "repositories": [
+    {
+      "type": "path",
+      "url": "packages/rastographer/igdownloader",
+      "options": {
+        "symlink": true
+      }
     }
+  ],
+  "require": {
+    "rastographer/igdownloader": "^0.1"
+  }
 }
 ```
 
@@ -215,8 +215,8 @@ Expected request payload:
 
 ```json
 {
-    "url": "https://www.instagram.com/p/XXXXXXXXXXX/",
-    "expect": "any"
+  "url": "https://www.instagram.com/p/XXXXXXXXXXX/",
+  "expect": "any"
 }
 ```
 
@@ -229,21 +229,21 @@ Current successful response shape:
 
 ```json
 {
-    "ok": true,
-    "shortcode": "ABC123XYZ90",
-    "cover": "https://your-app.test/img?...",
-    "items": [
-        {
-            "position": 1,
-            "kind": "video",
-            "preview": "https://your-app.test/img?...",
-            "download": "https://your-app.test/dl?...",
-            "url": "https://cdninstagram.com/...",
-            "size": null,
-            "quality": "1080p"
-        }
-    ],
-    "schema_version": 2
+  "ok": true,
+  "shortcode": "ABC123XYZ90",
+  "cover": "https://your-app.test/img?...",
+  "items": [
+    {
+      "position": 1,
+      "kind": "video",
+      "preview": "https://your-app.test/img?...",
+      "download": "https://your-app.test/dl?...",
+      "url": "https://cdninstagram.com/...",
+      "size": null,
+      "quality": "1080p"
+    }
+  ],
+  "schema_version": 2
 }
 ```
 
@@ -251,13 +251,13 @@ Current error response shape:
 
 ```json
 {
-    "ok": false,
-    "error": {
-        "code": "INVALID_URL",
-        "title": "Invalid link",
-        "message": "That does not look like a valid Instagram link.",
-        "help": "Example: https://www.instagram.com/p/XXXXXXXXXX/"
-    }
+  "ok": false,
+  "error": {
+    "code": "INVALID_URL",
+    "title": "Invalid link",
+    "message": "That does not look like a valid Instagram link.",
+    "help": "Example: https://www.instagram.com/p/XXXXXXXXXX/"
+  }
 }
 ```
 
@@ -486,3 +486,4 @@ Host application integration example:
 - `config/igdownloader.php`
 - `app/IgDownloader/DatabaseProxyResolver.php`
 
+Thank you.
