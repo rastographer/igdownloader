@@ -35,10 +35,10 @@ return [
         'pool' => [],
     ],
     'strategies' => [
-        'order' => ['embed', 'canonical', 'graphql'],
+        'order' => ['canonical', 'embed', 'graphql'],
         'map' => [
-            'embed' => EmbedStrategy::class,
             'canonical' => CanonicalStrategy::class,
+            'embed' => EmbedStrategy::class,
             'graphql' => GraphQLStrategy::class,
         ],
     ],
