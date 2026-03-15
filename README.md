@@ -342,7 +342,7 @@ $result = app(Downloader::class)->fetch(
 use Rastographer\IgDownloader\Services\FetchMediaAction;
 
 $payload = app(FetchMediaAction::class)->handle(
-    'https://www.instagram.com/stories/_m.w.ende_/3853356834774348296/',
+    'https://www.instagram.com/stories/instagramuser/xxxxxxxxxxxxxxx/',
     'req-123'
 );
 ```
