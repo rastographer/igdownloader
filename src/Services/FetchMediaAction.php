@@ -30,6 +30,10 @@ class FetchMediaAction
         $context = new ExtractionContext(
             preferredKind: $parsed['kind'],
             requestId: $requestId,
+            meta: [
+                'url' => $url,
+                'username' => $parsed['username'] ?? null,
+            ],
         );
 
         $result = $this->downloader->fetch($parsed['shortcode'], $context);

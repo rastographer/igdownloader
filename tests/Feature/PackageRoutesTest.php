@@ -37,6 +37,91 @@ HTML;
         ->and($response->json('items.0.download'))->toContain('/dl?');
 });
 
+it('fetches a profile picture from a profile url', function () {
+    $html = <<<'HTML'
+<html>
+    <head>
+        <meta property="og:image" content="https://cdninstagram.com/profile/avatar.jpg">
+    </head>
+    <body></body>
+</html>
+HTML;
+
+    Http::fake([
+        'https://www.instagram.com/_m.w.ende_/' => Http::response($html, 200, ['Content-Type' => 'text/html']),
+    ]);
+
+    $response = $this->post('/fetch', [
+        'url' => 'https://www.instagram.com/_m.w.ende_/',
+        'expect' => 'image',
+    ]);
+
+    $response->assertSuccessful()
+        ->assertJsonPath('ok', true)
+        ->assertJsonPath('shortcode', '_m.w.ende_')
+        ->assertJsonPath('items.0.kind', 'image')
+        ->assertJsonCount(1, 'items');
+});
+
+it('fetches a story video from a story url', function () {
+    $storyId = '3853356834774348296';
+    $html = <<<'HTML'
+<html>
+    <head></head>
+    <body>
+        <script type="application/json" data-sjs>
+            {"story":{"id":"3853356834774348296","media_type":2,"video_versions":[{"url":"https://cdninstagram.com/stories/story-video.mp4","width":720,"height":1280}],"image_versions2":{"candidates":[{"url":"https://cdninstagram.com/stories/story-preview.jpg","width":720,"height":1280}]}}}
+        </script>
+    </body>
+</html>
+HTML;
+
+    Http::fake([
+        'https://www.instagram.com/stories/_m.w.ende_/*' => Http::response($html, 200, ['Content-Type' => 'text/html']),
+    ]);
+
+    $response = $this->post('/fetch', [
+        'url' => "https://www.instagram.com/stories/_m.w.ende_/{$storyId}/",
+        'expect' => 'video',
+    ]);
+
+    $response->assertSuccessful()
+        ->assertJsonPath('ok', true)
+        ->assertJsonPath('shortcode', $storyId)
+        ->assertJsonPath('items.0.kind', 'video')
+        ->assertJsonCount(1, 'items');
+});
+
+it('fetches highlight media from a highlight url', function () {
+    $highlightId = '17893893367425927';
+    $html = <<<'HTML'
+<html>
+    <head></head>
+    <body>
+        <script type="application/json" data-sjs>
+            {"highlight":{"id":"17893893367425927","items":[{"id":"item-1","media_type":1,"image_versions2":{"candidates":[{"url":"https://cdninstagram.com/highlights/highlight-image.jpg","width":720,"height":1280}]}},{"id":"item-2","media_type":2,"video_versions":[{"url":"https://cdninstagram.com/highlights/highlight-video.mp4","width":720,"height":1280}],"image_versions2":{"candidates":[{"url":"https://cdninstagram.com/highlights/highlight-preview.jpg","width":720,"height":1280}]}}]}}
+        </script>
+    </body>
+</html>
+HTML;
+
+    Http::fake([
+        'https://www.instagram.com/stories/highlights/*' => Http::response($html, 200, ['Content-Type' => 'text/html']),
+    ]);
+
+    $response = $this->post('/fetch', [
+        'url' => "https://www.instagram.com/stories/highlights/{$highlightId}/",
+        'expect' => 'any',
+    ]);
+
+    $response->assertSuccessful()
+        ->assertJsonPath('ok', true)
+        ->assertJsonPath('shortcode', $highlightId)
+        ->assertJsonCount(2, 'items');
+
+    expect(collect($response->json('items'))->pluck('kind')->all())->toBe(['image', 'video']);
+});
+
 it('streams signed preview and download responses for allowed hosts', function () {
     $previewSource = 'https://cdninstagram.com/media/thumb.jpg';
     $downloadSource = 'https://cdninstagram.com/media/video-720.mp4';

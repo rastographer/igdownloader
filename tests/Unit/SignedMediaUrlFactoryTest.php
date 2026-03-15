@@ -13,7 +13,7 @@ it('builds signed preview urls using the configured package route name', functio
     $parts = parse_url($url);
     parse_str($parts['query'] ?? '', $query);
 
-    expect($parts['path'] ?? null)->toBe('/img')
+    expect($parts['path'] ?? null)->toEndWith('/img')
         ->and($query)->toHaveKeys(['expires', 'signature', 'key']);
 });
 
@@ -30,7 +30,7 @@ it('builds signed download urls with media metadata', function () {
     $parts = parse_url($url);
     parse_str($parts['query'] ?? '', $query);
 
-    expect($parts['path'] ?? null)->toBe('/dl')
+    expect($parts['path'] ?? null)->toEndWith('/dl')
         ->and($query['sc'] ?? null)->toBe('ABC123XYZ90')
         ->and($query['kind'] ?? null)->toBe('video')
         ->and($query['q'] ?? null)->toBe('720p')

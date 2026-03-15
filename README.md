@@ -5,6 +5,7 @@
 The package currently provides:
 
 - URL parsing for Instagram post, reel, TV, and reels URLs.
+- URL parsing for Instagram stories, story highlights, and profile URLs.
 - A strategy-based extraction pipeline.
 - Signed preview and download routes.
 - Upstream HTTP fetching with optional proxy resolution.
@@ -27,10 +28,12 @@ This is based on the package `composer.json`. The package is not declared compat
 
 ## Package Status
 
-Current package version: `0.1.0`
+Current package version: `0.1.1`
 
 Current implementation status:
 
+- `StoryStrategy` is implemented for story and highlight URLs.
+- `ProfileStrategy` is implemented for profile-picture URLs.
 - `CanonicalStrategy` is implemented.
 - `EmbedStrategy` is implemented.
 - `GraphQLStrategy` is a placeholder and returns `null`.
@@ -176,8 +179,10 @@ IGDL_LOG_CHANNEL=instagram
 Current default order:
 
 ```php
-['embed', 'canonical', 'graphql']
+['story', 'profile', 'canonical', 'embed', 'graphql']
 ```
+
+When a consuming application has an older published `igdownloader` config, the service provider appends any missing built-in strategies automatically so story/profile support can still resolve without a config crash.
 
 ## Environment Variables
 
@@ -224,6 +229,15 @@ Validation rules:
 
 - `url`: required, must be a valid URL.
 - `expect`: optional, must be one of `image`, `video`, or `any`.
+
+Supported URL categories now include:
+
+- Post URLs such as `https://www.instagram.com/p/.../`
+- Reel URLs such as `https://www.instagram.com/reel/.../` and `https://www.instagram.com/reels/.../`
+- TV URLs such as `https://www.instagram.com/tv/.../`
+- Story URLs such as `https://www.instagram.com/stories/{username}/{storyId}/`
+- Story highlight URLs such as `https://www.instagram.com/stories/highlights/{highlightId}/`
+- Profile URLs such as `https://www.instagram.com/{username}/`
 
 Current successful response shape:
 
@@ -320,13 +334,15 @@ $result = app(Downloader::class)->fetch(
 );
 ```
 
+`Downloader::fetch()` remains the shortcode-oriented contract. For story, highlight, and profile URLs, prefer the URL-based action below.
+
 ### Use the package action
 
 ```php
 use Rastographer\IgDownloader\Services\FetchMediaAction;
 
 $payload = app(FetchMediaAction::class)->handle(
-    'https://www.instagram.com/p/ABC123XYZ90/',
+    'https://www.instagram.com/stories/_m.w.ende_/3853356834774348296/',
     'req-123'
 );
 ```
@@ -387,25 +403,15 @@ If your application does not define a dedicated `instagram` channel, point `IGDL
 
 ## Testing
 
-The package currently does not include its own isolated package test suite inside `packages/rastographer/igdownloader/tests`.
+The package includes tests under `packages/rastographer/igdownloader/tests`.
 
-At the moment, package behavior is verified through host application feature tests:
-
-- `tests/Feature/IgDownloaderPackageFlowTest.php`
-- `tests/Feature/DatabaseProxyResolverTest.php`
-
-Run them with:
+If you are running the package tests against a consuming Laravel application bootstrap, point the package test harness at that application:
 
 ```bash
-php artisan test --compact tests/Feature/IgDownloaderPackageFlowTest.php
-php artisan test --compact tests/Feature/DatabaseProxyResolverTest.php
+IGDL_TEST_BASE_PATH=/path/to/your-app php /path/to/your-app/vendor/bin/pest packages/rastographer/igdownloader/tests --compact
 ```
 
-If your environment has a custom log channel that writes to a protected location, set a writable testing log channel:
-
-```bash
-IGDL_LOG_CHANNEL=stderr LOG_CHANNEL=stderr php artisan test --compact
-```
+In this workspace, the tests were run against the `snapigdownloader` host app bootstrap.
 
 ## Updating the Package
 
@@ -458,7 +464,8 @@ These are current, precise limitations of the package as implemented today:
 - No package migrations.
 - No built-in database proxy storage.
 - `GraphQLStrategy` is not implemented.
-- Strategy behavior depends on upstream Instagram markup remaining parseable.
+- Story, highlight, and profile extraction still depend on public Instagram markup remaining parseable.
+- Public-story and highlight availability still depends on what Instagram exposes without authentication.
 
 ## Recommended Production Requirements
 
@@ -477,6 +484,9 @@ Core package entry points:
 - `src/IgDownloaderServiceProvider.php`
 - `src/Services/DownloaderManager.php`
 - `src/Services/FetchMediaAction.php`
+- `src/Services/InstagramHtmlMediaExtractor.php`
+- `src/Strategies/StoryStrategy.php`
+- `src/Strategies/ProfileStrategy.php`
 - `src/Strategies/CanonicalStrategy.php`
 - `src/Strategies/EmbedStrategy.php`
 - `routes/web.php`

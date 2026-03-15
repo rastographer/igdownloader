@@ -17,6 +17,10 @@ class EmbedStrategy implements ExtractionStrategy
 
     public function try(string $shortcode, ExtractionContext $context): ?MediaResult
     {
+        if ($context->preferredKind !== null && ! in_array($context->preferredKind, ['p', 'reel', 'tv', 'reels'], true)) {
+            return null;
+        }
+
         $response = $this->upstreamHttpClient->request(
             'GET',
             "https://www.instagram.com/p/{$shortcode}/embed/captioned/",

@@ -3,6 +3,8 @@
 use Rastographer\IgDownloader\Strategies\CanonicalStrategy;
 use Rastographer\IgDownloader\Strategies\EmbedStrategy;
 use Rastographer\IgDownloader\Strategies\GraphQLStrategy;
+use Rastographer\IgDownloader\Strategies\ProfileStrategy;
+use Rastographer\IgDownloader\Strategies\StoryStrategy;
 
 return [
     'routes' => [
@@ -35,12 +37,13 @@ return [
         'pool' => [],
     ],
     'strategies' => [
-        'order' => ['canonical', 'embed', 'graphql'],
+        'order' => ['story', 'profile', 'canonical', 'embed', 'graphql'],
         'map' => [
+            'story' => StoryStrategy::class,
+            'profile' => ProfileStrategy::class,
             'canonical' => CanonicalStrategy::class,
             'embed' => EmbedStrategy::class,
             'graphql' => GraphQLStrategy::class,
         ],
     ],
 ];
-

@@ -23,6 +23,10 @@ class CanonicalStrategy implements ExtractionStrategy
         $jsonLdImage = null;
         $preferred = $context->preferredKind;
 
+        if ($preferred !== null && ! in_array($preferred, $paths, true)) {
+            return null;
+        }
+
         if ($preferred !== null && in_array($preferred, $paths, true)) {
             usort($paths, fn (string $left, string $right): int => $left === $preferred ? -1 : ($right === $preferred ? 1 : 0));
         }

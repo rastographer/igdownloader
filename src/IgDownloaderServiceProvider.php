@@ -7,6 +7,7 @@ use Rastographer\IgDownloader\Contracts\Downloader;
 use Rastographer\IgDownloader\Contracts\ProxyResolver;
 use Rastographer\IgDownloader\Services\DownloaderManager;
 use Rastographer\IgDownloader\Services\FetchMediaAction;
+use Rastographer\IgDownloader\Services\InstagramHtmlMediaExtractor;
 use Rastographer\IgDownloader\Services\InstagramUrlParser;
 use Rastographer\IgDownloader\Services\SafeUrlGuard;
 use Rastographer\IgDownloader\Services\SignedMediaUrlFactory;
@@ -36,6 +37,7 @@ class IgDownloaderServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(InstagramUrlParser::class);
+        $this->app->singleton(InstagramHtmlMediaExtractor::class);
         $this->app->singleton(SourceUrlStore::class);
         $this->app->singleton(SafeUrlGuard::class);
         $this->app->singleton(UpstreamHttpClient::class);
@@ -43,8 +45,15 @@ class IgDownloaderServiceProvider extends ServiceProvider
         $this->app->singleton(FetchMediaAction::class);
 
         $this->app->singleton(Downloader::class, function ($app): Downloader {
-            $map = (array) config('igdownloader.strategies.map', []);
-            $order = (array) config('igdownloader.strategies.order', []);
+            $defaultMap = (array) require __DIR__.'/../config/igdownloader.php';
+            $map = array_merge(
+                (array) ($defaultMap['strategies']['map'] ?? []),
+                (array) config('igdownloader.strategies.map', [])
+            );
+            $order = array_values(array_unique(array_merge(
+                (array) config('igdownloader.strategies.order', []),
+                array_keys($map),
+            )));
             $strategies = [];
 
             foreach ($order as $key) {

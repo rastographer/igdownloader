@@ -3,7 +3,7 @@
     "description": "Instagram media extraction and signed proxy delivery for Laravel applications.",
     "type": "library",
     "license": "MIT",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "require": {
         "php": "^8.2",
         "illuminate/cache": "^12.0",
