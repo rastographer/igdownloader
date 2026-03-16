@@ -28,7 +28,7 @@ This is based on the package `composer.json`. The package is not declared compat
 
 ## Package Status
 
-Current package version: `0.1.2`
+Current package version: `0.1.3`
 
 Current implementation status:
 
@@ -75,7 +75,7 @@ Add a path repository to the host application's `composer.json`:
     }
   ],
   "require": {
-    "rastographer/igdownloader": "^0.1"
+    "rastographer/igdownloader": "^0.1.3"
   }
 }
 ```
