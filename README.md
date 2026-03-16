@@ -28,8 +28,6 @@ This is based on the package `composer.json`. The package is not declared compat
 
 ## Package Status
 
-Current package version: `0.1.3`
-
 Current implementation status:
 
 - `StoryStrategy` is implemented for story and highlight URLs.
