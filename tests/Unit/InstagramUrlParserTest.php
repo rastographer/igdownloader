@@ -16,9 +16,9 @@ it('parses supported instagram urls', function (string $url, string $kind, strin
     ['instagram.com/reel/SHORTCODE12/', 'reel', 'SHORTCODE12'],
     ['https://m.instagram.com/tv/TVSHORTCODE1/?utm_source=test', 'tv', 'TVSHORTCODE1'],
     ['https://www.instagram.com/reels/REELS1234567/', 'reels', 'REELS1234567'],
-    ['https://www.instagram.com/stories/_m.w.ende_/3853356834774348296/', 'story', '3853356834774348296'],
+    ['https://www.instagram.com/stories/rastographer/3853356834774348296/', 'story', '3853356834774348296'],
     ['https://www.instagram.com/stories/highlights/17893893367425927/', 'highlight', '17893893367425927'],
-    ['https://www.instagram.com/_m.w.ende_/', 'profile', '_m.w.ende_'],
+    ['https://www.instagram.com/rastographer/', 'profile', 'rastographer'],
 ]);
 
 it('rejects unsupported or malformed urls', function (string $url) {

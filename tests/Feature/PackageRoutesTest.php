@@ -48,17 +48,17 @@ it('fetches a profile picture from a profile url', function () {
 HTML;
 
     Http::fake([
-        'https://www.instagram.com/_m.w.ende_/' => Http::response($html, 200, ['Content-Type' => 'text/html']),
+        'https://www.instagram.com/rastographer/' => Http::response($html, 200, ['Content-Type' => 'text/html']),
     ]);
 
     $response = $this->post('/fetch', [
-        'url' => 'https://www.instagram.com/_m.w.ende_/',
+        'url' => 'https://www.instagram.com/rastographer/',
         'expect' => 'image',
     ]);
 
     $response->assertSuccessful()
         ->assertJsonPath('ok', true)
-        ->assertJsonPath('shortcode', '_m.w.ende_')
+        ->assertJsonPath('shortcode', 'rastographer')
         ->assertJsonPath('items.0.kind', 'image')
         ->assertJsonCount(1, 'items');
 });
@@ -77,11 +77,11 @@ it('fetches a story video from a story url', function () {
 HTML;
 
     Http::fake([
-        'https://www.instagram.com/stories/_m.w.ende_/*' => Http::response($html, 200, ['Content-Type' => 'text/html']),
+        'https://www.instagram.com/stories/rastographer/*' => Http::response($html, 200, ['Content-Type' => 'text/html']),
     ]);
 
     $response = $this->post('/fetch', [
-        'url' => "https://www.instagram.com/stories/_m.w.ende_/{$storyId}/",
+        'url' => "https://www.instagram.com/stories/rastographer/{$storyId}/",
         'expect' => 'video',
     ]);
 
