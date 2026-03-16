@@ -496,4 +496,4 @@ Host application integration example:
 - `config/igdownloader.php`
 - `app/IgDownloader/DatabaseProxyResolver.php`
 
-Thank you.
+Thank you!
